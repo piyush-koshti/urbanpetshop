@@ -1,3 +1,8 @@
-const strapi = require('@strapi/strapi');
+const { createStrapi } = require('@strapi/strapi');
 
-strapi().start();
+async function start() {
+  const app = await createStrapi();
+  await app.start();
+}
+
+start();
