@@ -1,3 +1,5 @@
+require('ts-node/register');
+
 const { createStrapi } = require('@strapi/strapi');
 
 async function start() {
