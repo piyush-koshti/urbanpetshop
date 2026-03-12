@@ -1,10 +1,11 @@
-require('ts-node/register');
+const { spawn } = require("child_process");
 
-const { createStrapi } = require('@strapi/strapi');
+const processStart = spawn(
+  "node",
+  ["node_modules/@strapi/strapi/bin/strapi.js", "start"],
+  { stdio: "inherit" }
+);
 
-async function start() {
-  const app = await createStrapi();
-  await app.start();
-}
-
-start();
+processStart.on("close", (code) => {
+  process.exit(code);
+});
