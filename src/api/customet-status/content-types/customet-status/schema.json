@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "customet_statuses",
+  "info": {
+    "singularName": "customet-status",
+    "pluralName": "customet-statuses",
+    "displayName": "custometStatus"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "customer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::customer.customer",
+      "inversedBy": "customet_status"
+    },
+    "achievement": {
+      "type": "enumeration",
+      "enum": [
+        "Diamond",
+        "Gold",
+        "Platinum",
+        "Silver"
+      ]
+    }
+  }
+}

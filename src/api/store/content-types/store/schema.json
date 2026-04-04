@@ -23,10 +23,10 @@
       "target": "api::staff.staff",
       "mappedBy": "store"
     },
-    "follow_up": {
+    "follow_up_lists": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::follow-up.follow-up",
+      "relation": "oneToMany",
+      "target": "api::follow-up-list.follow-up-list",
       "mappedBy": "store"
     }
   }

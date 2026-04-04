@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const config = ({ env }) => ({
     host: env('HOST', '0.0.0.0'),
-    port: env.int('PORT', 1337),
+    port: env.int('PORT', 3035),
+    url: env('PUBLIC_URL', 'http://localhost:3035'),
     app: {
         keys: env.array('APP_KEYS'),
     },

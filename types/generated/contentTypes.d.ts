@@ -447,7 +447,19 @@ export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    customet_follow_up: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::customet-follow-up.customet-follow-up'
+    >;
+    customet_status: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::customet-status.customet-status'
+    >;
     email: Schema.Attribute.Email;
+    follow_up_lists: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::follow-up-list.follow-up-list'
+    >;
     instagramId: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -470,31 +482,103 @@ export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiFollowUpFollowUp extends Struct.CollectionTypeSchema {
-  collectionName: 'follow_ups';
+export interface ApiCustometFollowUpCustometFollowUp
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'customet_follow_ups';
   info: {
-    displayName: 'followUp';
-    pluralName: 'follow-ups';
-    singularName: 'follow-up';
+    displayName: 'custometFollowUp';
+    pluralName: 'customet-follow-ups';
+    singularName: 'customet-follow-up';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
+    follow_ups: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::follow-up-list.follow-up-list'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::customet-follow-up.customet-follow-up'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCustometStatusCustometStatus
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'customet_statuses';
+  info: {
+    displayName: 'custometStatus';
+    pluralName: 'customet-statuses';
+    singularName: 'customet-status';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    achievement: Schema.Attribute.Enumeration<
+      ['Diamond', 'Gold', 'Platinum', 'Silver']
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::customet-status.customet-status'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFollowUpListFollowUpList
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'follow_up_lists';
+  info: {
+    displayName: 'FollowUpList';
+    pluralName: 'follow-up-lists';
+    singularName: 'follow-up-list';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     billAmount: Schema.Attribute.BigInteger;
+    billDate: Schema.Attribute.Date;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
-    customerName: Schema.Attribute.String;
+    customer: Schema.Attribute.Relation<'manyToOne', 'api::customer.customer'>;
+    CustomerName: Schema.Attribute.String;
+    customet_follow_ups: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::customet-follow-up.customet-follow-up'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::follow-up.follow-up'
+      'api::follow-up-list.follow-up-list'
     > &
       Schema.Attribute.Private;
+    Notes: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
-    store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
+    store: Schema.Attribute.Relation<'manyToOne', 'api::store.store'>;
     tillSequence: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -547,9 +631,9 @@ export interface ApiStoreStore extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    follow_up: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::follow-up.follow-up'
+    follow_up_lists: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::follow-up-list.follow-up-list'
     >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::store.store'> &
@@ -1076,7 +1160,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::customer.customer': ApiCustomerCustomer;
-      'api::follow-up.follow-up': ApiFollowUpFollowUp;
+      'api::customet-follow-up.customet-follow-up': ApiCustometFollowUpCustometFollowUp;
+      'api::customet-status.customet-status': ApiCustometStatusCustometStatus;
+      'api::follow-up-list.follow-up-list': ApiFollowUpListFollowUpList;
       'api::staff.staff': ApiStaffStaff;
       'api::store.store': ApiStoreStore;
       'plugin::content-releases.release': PluginContentReleasesRelease;

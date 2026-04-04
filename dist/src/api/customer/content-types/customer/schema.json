@@ -51,6 +51,24 @@
             "type": "component",
             "component": "repeatable.pets",
             "repeatable": true
+        },
+        "customet_status": {
+            "type": "relation",
+            "relation": "oneToOne",
+            "target": "api::customet-status.customet-status",
+            "mappedBy": "customer"
+        },
+        "follow_up_lists": {
+            "type": "relation",
+            "relation": "oneToMany",
+            "target": "api::follow-up-list.follow-up-list",
+            "mappedBy": "customer"
+        },
+        "customet_follow_up": {
+            "type": "relation",
+            "relation": "oneToOne",
+            "target": "api::customet-follow-up.customet-follow-up",
+            "mappedBy": "customer"
         }
     }
 }

@@ -19,6 +19,8 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => 
     nps: env.bool('FLAG_NPS', true),
     promoteEE: env.bool('FLAG_PROMOTE_EE', true),
   },
+
+  url: 'https://cmsurban.indianpetcompany.com/admin',
 });
 
 export default config;

@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "customet_follow_ups",
+  "info": {
+    "singularName": "customet-follow-up",
+    "pluralName": "customet-follow-ups",
+    "displayName": "custometFollowUp"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "customer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::customer.customer",
+      "inversedBy": "customet_follow_up"
+    },
+    "follow_ups": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::follow-up-list.follow-up-list",
+      "inversedBy": "customet_follow_ups"
+    }
+  }
+}
