@@ -5,7 +5,7 @@ export default {
       path: '/customers/today-birthdays',
       handler: 'customer.todayBirthdays',
       config: {
-        auth: false, // optional
+        auth: false,
       },
     },
   ],
