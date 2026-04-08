@@ -3,51 +3,47 @@ import { factories } from '@strapi/strapi';
 export default factories.createCoreController('api::customer.customer', ({ strapi }) => ({
 
   // ✅ NEW API: Today Birthdays
-  async todayBirthdays(ctx) {
+  async birthdayByDate(ctx) {
     try {
-      const today = new Date();
-      const month = today.getMonth() + 1;
-      const day = today.getDate();
+      const date = ctx.query.date as string;
 
-      const { page = 1, pageSize = 10 } = ctx.query;
+      if (!date) {
+        return ctx.badRequest('Date is required in DD-MM format');
+      }
 
-      const offset = (Number(page) - 1) * Number(pageSize);
+      if (!/^\d{2}-\d{2}$/.test(date)) {
+        return ctx.badRequest('Invalid format. Use DD-MM');
+      }
 
-      const knex = strapi.db.connection;
+      const [day, month] = date.split('-');
 
-      const customers = await knex('customers')
-        .leftJoin(
-          'components_repeatable_pets',
-          'customers.id',
-          'components_repeatable_pets.entity_id'
-        )
-        .whereRaw(
-          'EXTRACT(MONTH FROM components_repeatable_pets.birth_date) = ?',
-          [month]
-        )
-        .andWhereRaw(
-          'EXTRACT(DAY FROM components_repeatable_pets.birth_date) = ?',
-          [day]
-        )
-        .select('customers.*')
-        .distinct()
-        .limit(Number(pageSize))
-        .offset(offset);
-
-      return {
-        data: customers,
-        meta: {
-          pagination: {
-            page: Number(page),
-            pageSize: Number(pageSize),
+      const customers = await strapi.entityService.findMany('api::customer.customer', {
+        populate: {
+          store: {
+            fields: ['Name', 'Location'],
           },
+          petDetails: true,
         },
-      };
+      });
 
-    } catch (error) {
-      console.error(error);
-      ctx.throw(500, 'Failed to fetch today birthdays');
+      const filtered = customers.filter((customer: any) => {
+        if (!customer.petDetails) return false;
+
+        return customer.petDetails.some((pet: any) => {
+          if (!pet.birthDate) return false;
+
+          const d = new Date(pet.birthDate);
+          const petDay = String(d.getDate()).padStart(2, '0');
+          const petMonth = String(d.getMonth() + 1).padStart(2, '0');
+
+          return petDay === day && petMonth === month;
+        });
+      });
+
+      return { data: filtered };
+
+    } catch (err) {
+      return ctx.internalServerError('Something went wrong');
     }
-  },
-
+  }
 }));

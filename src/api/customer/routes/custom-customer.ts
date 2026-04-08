@@ -2,8 +2,8 @@ export default {
   routes: [
     {
       method: 'GET',
-      path: '/customers/today-birthdays',
-      handler: 'customer.todayBirthdays',
+      path: '/customers/birthday',
+      handler: 'customer.birthdayByDate',
       config: {
         auth: false,
       },
