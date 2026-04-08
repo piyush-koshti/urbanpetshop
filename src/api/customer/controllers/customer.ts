@@ -7,6 +7,9 @@ export default factories.createCoreController('api::customer.customer', ({ strap
     try {
       const date = ctx.query.date as string;
 
+      const page = parseInt(ctx.query.page as string) || 1;
+      const pageSize = parseInt(ctx.query.pageSize as string) || 25;
+
       if (!date) {
         return ctx.badRequest('Date is required in DD-MM format');
       }
@@ -40,7 +43,27 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         });
       });
 
-      return { data: filtered };
+      // ✅ Pagination Logic
+      const total = filtered.length;
+      const pageCount = Math.ceil(total / pageSize);
+
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+
+      const paginatedData = filtered.slice(start, end);
+
+      // ✅ Final Response
+      return {
+        data: paginatedData,
+        meta: {
+          pagination: {
+            page,
+            pageSize,
+            pageCount,
+            total,
+          },
+        },
+      };
 
     } catch (err) {
       return ctx.internalServerError('Something went wrong');
