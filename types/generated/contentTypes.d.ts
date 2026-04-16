@@ -430,6 +430,32 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBreedBreed extends Struct.CollectionTypeSchema {
+  collectionName: 'breeds';
+  info: {
+    displayName: 'Breed';
+    pluralName: 'breeds';
+    singularName: 'breed';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::breed.breed'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    value: Schema.Attribute.String;
+  };
+}
+
 export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
   collectionName: 'customers';
   info: {
@@ -472,7 +498,7 @@ export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
       Schema.Attribute.Unique;
     name: Schema.Attribute.String;
     Note: Schema.Attribute.String;
-    petDetails: Schema.Attribute.Component<'repeatable.pets', true>;
+    pets: Schema.Attribute.Relation<'oneToMany', 'api::pet.pet'>;
     publishedAt: Schema.Attribute.DateTime;
     store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
     updatedAt: Schema.Attribute.DateTime;
@@ -580,6 +606,65 @@ export interface ApiFollowUpListFollowUpList
     publishedAt: Schema.Attribute.DateTime;
     store: Schema.Attribute.Relation<'manyToOne', 'api::store.store'>;
     tillSequence: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPetTypePetType extends Struct.CollectionTypeSchema {
+  collectionName: 'pet_types';
+  info: {
+    displayName: 'PetType';
+    pluralName: 'pet-types';
+    singularName: 'pet-type';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pet-type.pet-type'
+    > &
+      Schema.Attribute.Private;
+    Name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    value: Schema.Attribute.String;
+  };
+}
+
+export interface ApiPetPet extends Struct.CollectionTypeSchema {
+  collectionName: 'pets';
+  info: {
+    displayName: 'Pet';
+    pluralName: 'pets';
+    singularName: 'pet';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    birthDate: Schema.Attribute.Date;
+    breed: Schema.Attribute.Relation<'oneToOne', 'api::breed.breed'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customer: Schema.Attribute.Relation<'manyToOne', 'api::customer.customer'>;
+    gender: Schema.Attribute.Enumeration<['Male', 'Female']>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::pet.pet'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    pet_type: Schema.Attribute.Relation<'oneToOne', 'api::pet-type.pet-type'>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1159,10 +1244,13 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::breed.breed': ApiBreedBreed;
       'api::customer.customer': ApiCustomerCustomer;
       'api::customet-follow-up.customet-follow-up': ApiCustometFollowUpCustometFollowUp;
       'api::customet-status.customet-status': ApiCustometStatusCustometStatus;
       'api::follow-up-list.follow-up-list': ApiFollowUpListFollowUpList;
+      'api::pet-type.pet-type': ApiPetTypePetType;
+      'api::pet.pet': ApiPetPet;
       'api::staff.staff': ApiStaffStaff;
       'api::store.store': ApiStoreStore;
       'plugin::content-releases.release': PluginContentReleasesRelease;

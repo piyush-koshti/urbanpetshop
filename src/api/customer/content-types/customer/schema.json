@@ -47,10 +47,11 @@
     "Note": {
       "type": "string"
     },
-    "petDetails": {
-      "type": "component",
-      "component": "repeatable.pets",
-      "repeatable": true
+    "pets": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pet.pet",
+      "mappedBy": "customer"
     },
     "customet_status": {
       "type": "relation",

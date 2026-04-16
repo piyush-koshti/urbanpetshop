@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pet_types",
+  "info": {
+    "singularName": "pet-type",
+    "pluralName": "pet-types",
+    "displayName": "PetType"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  }
+}

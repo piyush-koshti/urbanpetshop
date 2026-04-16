@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pets",
+  "info": {
+    "singularName": "pet",
+    "pluralName": "pets",
+    "displayName": "Pet"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "birthDate": {
+      "type": "date"
+    },
+    "gender": {
+      "type": "enumeration",
+      "enum": [
+        "Male",
+        "Female"
+      ]
+    },
+    "pet_type": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pet-type.pet-type"
+    },
+    "breed": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::breed.breed"
+    },
+    "customer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::customer.customer",
+      "inversedBy": "pets"
+    }
+  }
+}
