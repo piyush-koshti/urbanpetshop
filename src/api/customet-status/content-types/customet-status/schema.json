@@ -11,20 +11,20 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "customer": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::customer.customer",
-      "inversedBy": "customet_status"
+    "name": {
+      "type": "string"
     },
-    "achievement": {
-      "type": "enumeration",
-      "enum": [
-        "Diamond",
-        "Gold",
-        "Platinum",
-        "Silver"
-      ]
+    "value": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "borderColor": {
+      "type": "string"
     }
   }
 }

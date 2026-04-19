@@ -50,14 +50,7 @@
     "pets": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::pet.pet",
-      "mappedBy": "customer"
-    },
-    "customet_status": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::customet-status.customet-status",
-      "mappedBy": "customer"
+      "target": "api::pet.pet"
     },
     "follow_up_lists": {
       "type": "relation",
@@ -70,6 +63,11 @@
       "relation": "oneToOne",
       "target": "api::customet-follow-up.customet-follow-up",
       "mappedBy": "customer"
+    },
+    "customet_status": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::customet-status.customet-status"
     }
   }
 }

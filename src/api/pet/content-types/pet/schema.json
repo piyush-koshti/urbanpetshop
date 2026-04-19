@@ -33,12 +33,6 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::breed.breed"
-    },
-    "customer": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::customer.customer",
-      "inversedBy": "pets"
     }
   }
 }

@@ -22,6 +22,25 @@
       "relation": "manyToMany",
       "target": "api::follow-up-list.follow-up-list",
       "inversedBy": "customet_follow_ups"
+    },
+    "staff": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::staff.staff"
+    },
+    "Count": {
+      "type": "integer",
+      "default": 0
+    },
+    "FollowUpDate": {
+      "type": "date"
+    },
+    "isFollowed": {
+      "type": "boolean",
+      "default": false
+    },
+    "note": {
+      "type": "text"
     }
   }
 }

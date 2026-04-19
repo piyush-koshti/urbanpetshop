@@ -520,6 +520,7 @@ export interface ApiCustometFollowUpCustometFollowUp
     draftAndPublish: true;
   };
   attributes: {
+    Count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -528,13 +529,17 @@ export interface ApiCustometFollowUpCustometFollowUp
       'manyToMany',
       'api::follow-up-list.follow-up-list'
     >;
+    FollowUpDate: Schema.Attribute.Date;
+    isFollowed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::customet-follow-up.customet-follow-up'
     > &
       Schema.Attribute.Private;
+    note: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
+    staff: Schema.Attribute.Relation<'oneToOne', 'api::staff.staff'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -553,23 +558,24 @@ export interface ApiCustometStatusCustometStatus
     draftAndPublish: true;
   };
   attributes: {
-    achievement: Schema.Attribute.Enumeration<
-      ['Diamond', 'Gold', 'Platinum', 'Silver']
-    >;
+    borderColor: Schema.Attribute.String;
+    color: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::customet-status.customet-status'
     > &
       Schema.Attribute.Private;
+    name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    textColor: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    value: Schema.Attribute.String;
   };
 }
 
@@ -657,7 +663,6 @@ export interface ApiPetPet extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    customer: Schema.Attribute.Relation<'manyToOne', 'api::customer.customer'>;
     gender: Schema.Attribute.Enumeration<['Male', 'Female']>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::pet.pet'> &
