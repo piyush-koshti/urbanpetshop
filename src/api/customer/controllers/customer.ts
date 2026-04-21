@@ -6,33 +6,30 @@ export default factories.createCoreController('api::customer.customer', ({ strap
   async birthdayByDate(ctx) {
     try {
       const date = ctx.query.date as string;
-
       const page = parseInt(ctx.query.page as string) || 1;
       const pageSize = parseInt(ctx.query.pageSize as string) || 25;
 
       if (!date) {
         return ctx.badRequest('Date is required in DD-MM format');
       }
-
       if (!/^\d{2}-\d{2}$/.test(date)) {
         return ctx.badRequest('Invalid format. Use DD-MM');
       }
 
       const [day, month] = date.split('-');
-
       const customers = await strapi.entityService.findMany('api::customer.customer', {
         populate: {
           store: {
             fields: ['Name', 'Location'],
           },
-          petDetails: true,
+          pets: true,
         },
       });
 
       const filtered = customers.filter((customer: any) => {
-        if (!customer.petDetails) return false;
+        if (!customer.pets) return false;
 
-        return customer.petDetails.some((pet: any) => {
+        return customer.pets.some((pet: any) => {
           if (!pet.birthDate) return false;
 
           const d = new Date(pet.birthDate);
