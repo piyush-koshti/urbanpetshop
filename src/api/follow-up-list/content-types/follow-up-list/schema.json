@@ -22,9 +22,8 @@
     },
     "store": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::store.store",
-      "inversedBy": "follow_up_lists"
+      "relation": "oneToOne",
+      "target": "api::store.store"
     },
     "customer": {
       "type": "relation",

@@ -28,8 +28,7 @@
     "store": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::store.store",
-      "inversedBy": "staff"
+      "target": "api::store.store"
     }
   }
 }

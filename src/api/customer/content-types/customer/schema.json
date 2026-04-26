@@ -20,14 +20,8 @@
     "name": {
       "type": "string"
     },
-    "store": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::store.store"
-    },
     "email": {
-      "type": "email",
-      "required": false
+      "type": "string"
     },
     "instagramId": {
       "type": "string"
@@ -46,6 +40,11 @@
     },
     "Note": {
       "type": "string"
+    },
+    "store": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::store.store"
     },
     "pets": {
       "type": "relation",

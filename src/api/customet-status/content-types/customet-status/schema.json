@@ -4,7 +4,7 @@
   "info": {
     "singularName": "customet-status",
     "pluralName": "customet-statuses",
-    "displayName": "custometStatus"
+    "displayName": "customerStatus"
   },
   "options": {
     "draftAndPublish": true

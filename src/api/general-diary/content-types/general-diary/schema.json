@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "general_diaries",
+  "info": {
+    "singularName": "general-diary",
+    "pluralName": "general-diaries",
+    "displayName": "GeneralDiary"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "store": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::store.store"
+    },
+    "Note": {
+      "type": "richtext"
+    }
+  }
+}

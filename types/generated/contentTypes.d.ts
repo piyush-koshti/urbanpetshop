@@ -481,7 +481,7 @@ export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::customet-status.customet-status'
     >;
-    email: Schema.Attribute.Email;
+    email: Schema.Attribute.String;
     follow_up_lists: Schema.Attribute.Relation<
       'oneToMany',
       'api::follow-up-list.follow-up-list'
@@ -540,6 +540,7 @@ export interface ApiCustometFollowUpCustometFollowUp
     note: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
     staff: Schema.Attribute.Relation<'oneToOne', 'api::staff.staff'>;
+    store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -550,7 +551,7 @@ export interface ApiCustometStatusCustometStatus
   extends Struct.CollectionTypeSchema {
   collectionName: 'customet_statuses';
   info: {
-    displayName: 'custometStatus';
+    displayName: 'customerStatus';
     pluralName: 'customet-statuses';
     singularName: 'customet-status';
   };
@@ -610,8 +611,38 @@ export interface ApiFollowUpListFollowUpList
       Schema.Attribute.Private;
     Notes: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
-    store: Schema.Attribute.Relation<'manyToOne', 'api::store.store'>;
+    store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
     tillSequence: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGeneralDiaryGeneralDiary
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'general_diaries';
+  info: {
+    displayName: 'GeneralDiary';
+    pluralName: 'general-diaries';
+    singularName: 'general-diary';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::general-diary.general-diary'
+    > &
+      Schema.Attribute.Private;
+    Note: Schema.Attribute.RichText;
+    publishedAt: Schema.Attribute.DateTime;
+    store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -721,17 +752,12 @@ export interface ApiStoreStore extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    follow_up_lists: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::follow-up-list.follow-up-list'
-    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::store.store'> &
       Schema.Attribute.Private;
     Location: Schema.Attribute.String;
     Name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    staff: Schema.Attribute.Relation<'oneToOne', 'api::staff.staff'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1254,6 +1280,7 @@ declare module '@strapi/strapi' {
       'api::customet-follow-up.customet-follow-up': ApiCustometFollowUpCustometFollowUp;
       'api::customet-status.customet-status': ApiCustometStatusCustometStatus;
       'api::follow-up-list.follow-up-list': ApiFollowUpListFollowUpList;
+      'api::general-diary.general-diary': ApiGeneralDiaryGeneralDiary;
       'api::pet-type.pet-type': ApiPetTypePetType;
       'api::pet.pet': ApiPetPet;
       'api::staff.staff': ApiStaffStaff;

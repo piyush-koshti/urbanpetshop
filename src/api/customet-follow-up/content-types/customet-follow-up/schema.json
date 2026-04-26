@@ -28,6 +28,11 @@
       "relation": "oneToOne",
       "target": "api::staff.staff"
     },
+    "store": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::store.store"
+    },
     "Count": {
       "type": "integer",
       "default": 0
