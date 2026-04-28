@@ -71,6 +71,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       const month = ctx.query.month as string;
       const page = parseInt(ctx.query.page as string) || 1;
       const pageSize = parseInt(ctx.query.pageSize as string) || 25;
+      const location = ctx.query.location as string;
 
       if (!month) {
         return ctx.badRequest('Month is required in MM format');
@@ -84,7 +85,12 @@ export default factories.createCoreController('api::customer.customer', ({ strap
           store: {
             fields: ['Name', 'Location'],
           },
-          pets: true,
+          pets: {
+            populate: {
+              breed: true,
+              pet_type: true,
+            },
+          },
         },
       });
 
@@ -101,14 +107,31 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         });
       });
 
+      let filterByLocation: any;
+      if (location) {
+        filterByLocation = filtered.filter((customer: any) => {
+          if (customer.store) {
+            return customer.store.Location === location;
+          }
+          return false;
+        });
+      }
+
       // ✅ Pagination Logic
-      const total = filtered.length;
-      const pageCount = Math.ceil(total / pageSize);
+      let total = filtered.length;
+      let pageCount = Math.ceil(total / pageSize);
+      let paginatedData = filtered;
 
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
 
-      const paginatedData = filtered.slice(start, end);
+      if (location) {
+        total = filterByLocation.length;
+        pageCount = Math.ceil(total / pageSize);
+        paginatedData = filterByLocation.slice(start, end);
+      } else {
+        paginatedData = filtered.slice(start, end);
+      }
 
       // ✅ Final Response
       return {
@@ -133,6 +156,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       const ageGroup = ctx.query.group as string;
       const page = parseInt(ctx.query.page as string) || 1;
       const pageSize = parseInt(ctx.query.pageSize as string) || 25;
+      const location = ctx.query.location as string;
 
       if (!ageGroup) {
         return ctx.badRequest('Age group is required');
@@ -143,7 +167,12 @@ export default factories.createCoreController('api::customer.customer', ({ strap
           store: {
             fields: ['Name', 'Location'],
           },
-          pets: true,
+          pets: {
+            populate: {
+              breed: true,
+              pet_type: true,
+            },
+          },
         },
       });
 
@@ -191,16 +220,32 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         });
       });
 
+      let filterByLocation;
+      if (location) {
+        filterByLocation = filtered.filter((customer: any) => {
+          if (customer.store) {
+            return customer.store.Location === location;
+          }
+          return false;
+        });
+      }
+
       // ✅ Pagination Logic
-      const total = filtered.length;
-      const pageCount = Math.ceil(total / pageSize);
+      let total = filtered.length;
+      let pageCount = Math.ceil(total / pageSize);
+      let paginatedData = filtered;
 
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
 
-      const paginatedData = filtered.slice(start, end);
+      if (location) {
+        total = filterByLocation.length;
+        pageCount = Math.ceil(total / pageSize);
+        paginatedData = filterByLocation.slice(start, end);
+      } else {
+        paginatedData = filtered.slice(start, end);
+      }
 
-      // ✅ Final Response
       return {
         data: paginatedData,
         meta: {
