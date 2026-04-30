@@ -764,6 +764,35 @@ export interface ApiStoreStore extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiWorkingHrWorkingHr extends Struct.SingleTypeSchema {
+  collectionName: 'working_hrs';
+  info: {
+    displayName: 'WorkingHr';
+    pluralName: 'working-hrs';
+    singularName: 'working-hr';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    inTime: Schema.Attribute.Time & Schema.Attribute.DefaultTo<'08:00:00.000'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::working-hr.working-hr'
+    > &
+      Schema.Attribute.Private;
+    outTime: Schema.Attribute.Time & Schema.Attribute.DefaultTo<'19:00:00.000'>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1285,6 +1314,7 @@ declare module '@strapi/strapi' {
       'api::pet.pet': ApiPetPet;
       'api::staff.staff': ApiStaffStaff;
       'api::store.store': ApiStoreStore;
+      'api::working-hr.working-hr': ApiWorkingHrWorkingHr;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

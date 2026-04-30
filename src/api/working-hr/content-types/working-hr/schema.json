@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "working_hrs",
+  "info": {
+    "singularName": "working-hr",
+    "pluralName": "working-hrs",
+    "displayName": "WorkingHr"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "inTime": {
+      "type": "time",
+      "default": "08:00:00.000"
+    },
+    "outTime": {
+      "type": "time",
+      "default": "19:00:00.000"
+    }
+  }
+}

@@ -220,7 +220,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         });
       });
 
-      let filterByLocation;
+      let filterByLocation: any;
       if (location) {
         filterByLocation = filtered.filter((customer: any) => {
           if (customer.store) {
@@ -255,6 +255,83 @@ export default factories.createCoreController('api::customer.customer', ({ strap
             pageCount,
             total,
           },
+        },
+      };
+
+    } catch (err) {
+      return ctx.internalServerError('Something went wrong');
+    }
+  },
+
+  async petStats(ctx) {
+    try {
+      const location = ctx.query.location as string;
+
+      const customers = await strapi.entityService.findMany('api::customer.customer', {
+        filters: location
+          ? {
+            store: {
+              Location: {
+                $eq: location,
+              },
+            },
+          }
+          : {},
+        populate: {
+          store: {
+            fields: ['Name', 'Location'],
+          },
+          pets: true,
+        },
+      });
+      let filteredCustomers = customers;
+      const customersWithPets = filteredCustomers.filter(
+        (customer: any) => customer.pets && customer.pets.length > 0
+      );
+      const allPets = customersWithPets.flatMap((customer: any) => customer.pets);
+      const now = new Date();
+
+      const babyCutoff = new Date();
+      babyCutoff.setMonth(now.getMonth() - 3);
+
+      const puppyCutoff = new Date();
+      puppyCutoff.setMonth(now.getMonth() - 15);
+
+      const adultCutoff = new Date();
+      adultCutoff.setFullYear(now.getFullYear() - 7);
+
+      const parseLocalDate = (dateStr: string) => {
+        const [y, m, d] = dateStr.split("-").map(Number);
+        return new Date(y, m - 1, d);
+      };
+
+      let baby = 0;
+      let puppy = 0;
+      let adult = 0;
+      let senior = 0;
+
+      allPets.forEach((pet: any) => {
+        if (!pet.birthDate) return;
+        const birth = parseLocalDate(pet.birthDate);
+        if (birth >= babyCutoff) {
+          baby++;
+        } else if (birth < babyCutoff && birth >= puppyCutoff) {
+          puppy++;
+        } else if (birth < puppyCutoff && birth >= adultCutoff) {
+          adult++;
+        } else if (birth < adultCutoff) {
+          senior++;
+        }
+      });
+
+      // ✅ Final response
+      return {
+        data: {
+          totalPets: allPets.length,
+          baby,
+          puppy,
+          adult,
+          senior,
         },
       };
 

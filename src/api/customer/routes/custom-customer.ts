@@ -27,5 +27,13 @@ export default {
         auth: false,
       },
     },
+    {
+      method: 'GET',
+      path: '/customers/pet/stats',
+      handler: 'customer.petStats',
+      config: {
+        auth: false,
+      },
+    },
   ],
 };
