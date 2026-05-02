@@ -456,6 +456,32 @@ export interface ApiBreedBreed extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCityCity extends Struct.CollectionTypeSchema {
+  collectionName: 'cities';
+  info: {
+    displayName: 'city';
+    pluralName: 'cities';
+    singularName: 'city';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::city.city'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    value: Schema.Attribute.String;
+  };
+}
+
 export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
   collectionName: 'customers';
   info: {
@@ -694,7 +720,8 @@ export interface ApiPetPet extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    gender: Schema.Attribute.Enumeration<['Male', 'Female']>;
+    gender: Schema.Attribute.Enumeration<['Male', 'Female']> &
+      Schema.Attribute.DefaultTo<'Male'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::pet.pet'> &
       Schema.Attribute.Private;
@@ -704,6 +731,37 @@ export interface ApiPetPet extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiShoppingCategoryShoppingCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'shopping_categories';
+  info: {
+    displayName: 'shoppingCategory';
+    pluralName: 'shopping-categories';
+    singularName: 'shopping-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::shopping-category.shopping-category'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    textColor: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    value: Schema.Attribute.String;
   };
 }
 
@@ -1305,6 +1363,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::breed.breed': ApiBreedBreed;
+      'api::city.city': ApiCityCity;
       'api::customer.customer': ApiCustomerCustomer;
       'api::customet-follow-up.customet-follow-up': ApiCustometFollowUpCustometFollowUp;
       'api::customet-status.customet-status': ApiCustometStatusCustometStatus;
@@ -1312,6 +1371,7 @@ declare module '@strapi/strapi' {
       'api::general-diary.general-diary': ApiGeneralDiaryGeneralDiary;
       'api::pet-type.pet-type': ApiPetTypePetType;
       'api::pet.pet': ApiPetPet;
+      'api::shopping-category.shopping-category': ApiShoppingCategoryShoppingCategory;
       'api::staff.staff': ApiStaffStaff;
       'api::store.store': ApiStoreStore;
       'api::working-hr.working-hr': ApiWorkingHrWorkingHr;

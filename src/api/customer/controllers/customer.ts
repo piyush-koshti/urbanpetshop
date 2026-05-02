@@ -153,16 +153,25 @@ export default factories.createCoreController('api::customer.customer', ({ strap
 
   async petByAgeGroup(ctx) {
     try {
-      const ageGroup = ctx.query.group as string;
+      const groups = (ctx.query.group as string)?.split(",") || [];
       const page = parseInt(ctx.query.page as string) || 1;
       const pageSize = parseInt(ctx.query.pageSize as string) || 25;
       const location = ctx.query.location as string;
 
-      if (!ageGroup) {
-        return ctx.badRequest('Age group is required');
+      if (!groups.length) {
+        return ctx.badRequest('At least one age group is required');
       }
 
       const customers = await strapi.entityService.findMany('api::customer.customer', {
+        filters: location
+          ? {
+            store: {
+              Location: {
+                $eq: location,
+              },
+            },
+          }
+          : {},
         populate: {
           store: {
             fields: ['Name', 'Location'],
@@ -187,7 +196,6 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       const adultCutoff = new Date(now);
       adultCutoff.setFullYear(now.getFullYear() - 7);
 
-      // helper to parse local date (IMPORTANT)
       const parseLocalDate = (dateStr: string) => {
         const [y, m, d] = dateStr.split("-").map(Number);
         return new Date(y, m - 1, d);
@@ -201,50 +209,25 @@ export default factories.createCoreController('api::customer.customer', ({ strap
 
           const birth = parseLocalDate(pet.birthDate);
 
-          if (ageGroup === "baby") {
-            return birth >= babyCutoff;
-          }
-
-          if (ageGroup === "puppy") {
-            return birth < babyCutoff && birth >= puppyCutoff;
-          }
-
-          if (ageGroup === "adult") {
-            return birth < puppyCutoff && birth >= adultCutoff;
-          }
-
-          if (ageGroup === "senior") {
-            return birth < adultCutoff;
-          }
-          return false;
+          // 🔥 match ANY selected group
+          return groups.some((ageGroup) => {
+            if (ageGroup === "baby") return birth >= babyCutoff;
+            if (ageGroup === "puppy") return birth < babyCutoff && birth >= puppyCutoff;
+            if (ageGroup === "adult") return birth < puppyCutoff && birth >= adultCutoff;
+            if (ageGroup === "senior") return birth < adultCutoff;
+            return false;
+          });
         });
       });
 
-      let filterByLocation: any;
-      if (location) {
-        filterByLocation = filtered.filter((customer: any) => {
-          if (customer.store) {
-            return customer.store.Location === location;
-          }
-          return false;
-        });
-      }
-
-      // ✅ Pagination Logic
-      let total = filtered.length;
-      let pageCount = Math.ceil(total / pageSize);
-      let paginatedData = filtered;
+      let finalData = filtered;
+      const total = finalData.length;
+      const pageCount = Math.ceil(total / pageSize);
 
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
 
-      if (location) {
-        total = filterByLocation.length;
-        pageCount = Math.ceil(total / pageSize);
-        paginatedData = filterByLocation.slice(start, end);
-      } else {
-        paginatedData = filtered.slice(start, end);
-      }
+      const paginatedData = finalData.slice(start, end);
 
       return {
         data: paginatedData,

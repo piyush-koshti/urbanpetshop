@@ -19,6 +19,7 @@
     },
     "gender": {
       "type": "enumeration",
+      "default": "Male",
       "enum": [
         "Male",
         "Female"
