@@ -321,5 +321,148 @@ export default factories.createCoreController('api::customer.customer', ({ strap
     } catch (err) {
       return ctx.internalServerError('Something went wrong');
     }
-  }
+  },
+
+  async updateAllCustomerStatus(ctx) {
+    try {
+      let page = 1;
+      const pageSize = 500;
+      let hasMore = true;
+
+      // Load statuses once
+      const allStatuses = await strapi
+        .documents("api::customet-status.customet-status")
+        .findMany();
+
+      const statusMap: Record<string, string> = {};
+
+      allStatuses.forEach((item: any) => {
+        statusMap[item.value] = item.documentId;
+      });
+
+      while (hasMore) {
+        const customerFollowUps = await strapi
+          .documents("api::customet-follow-up.customet-follow-up")
+          .findMany({
+            populate: {
+              customer: {
+                fields: ["documentId"],
+              },
+              follow_ups: {
+                fields: ["billDate", "billAmount"],
+              },
+            },
+
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
+          });
+
+        console.log(
+          "PAGE:",
+          page,
+          "COUNT:",
+          customerFollowUps.length
+        );
+
+        // Stop loop
+        if (customerFollowUps.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        // Process current batch
+        for (const customerFollowUpData of customerFollowUps as any[]) {
+          try {
+            const customerId =
+              customerFollowUpData.customer?.documentId;
+
+            if (!customerId) continue;
+
+            const followUps =
+              customerFollowUpData.follow_ups || [];
+
+            const oneMonthsAgo = new Date();
+
+            oneMonthsAgo.setMonth(
+              oneMonthsAgo.getMonth() - 1
+            );
+
+            const last1MonthFollowUps = followUps.filter(
+              (followUp: any) => {
+                if (!followUp.billDate) return false;
+
+                const billDate = new Date(
+                  followUp.billDate
+                );
+
+                return billDate >= oneMonthsAgo;
+              }
+            );
+
+            const totalBillAmount =
+              last1MonthFollowUps.reduce(
+                (acc: number, followUp: any) => {
+                  return (
+                    acc +
+                    Number(followUp.billAmount || 0)
+                  );
+                },
+                0
+              );
+
+            let customerStatus = "bronz";
+
+            if (
+              totalBillAmount >= 1501 &&
+              totalBillAmount <= 3000
+            ) {
+              customerStatus = "silver";
+            } else if (
+              totalBillAmount >= 3001 &&
+              totalBillAmount <= 5000
+            ) {
+              customerStatus = "gold";
+            } else if (
+              totalBillAmount >= 5001 &&
+              totalBillAmount <= 10000
+            ) {
+              customerStatus = "diamond";
+            } else if (totalBillAmount > 10000) {
+              customerStatus = "platinum";
+            }
+
+            const statusDocumentId =
+              statusMap[customerStatus];
+
+            if (!statusDocumentId) continue;
+
+            await strapi
+              .documents("api::customer.customer")
+              .update({
+                documentId: customerId,
+                data: {
+                  customet_status: statusDocumentId,
+                },
+              });
+          } catch (error) {
+            console.log(
+              "Customer Processing Error:",
+              error
+            );
+          }
+        }
+        page++;
+      }
+
+      ctx.send({
+        success: true,
+        message:
+          "Customer status updated successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      ctx.throw(500, error);
+    }
+  },
 }));
