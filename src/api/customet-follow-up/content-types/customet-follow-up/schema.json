@@ -38,6 +38,11 @@
       "relation": "oneToOne",
       "target": "api::follow-status.follow-status"
     },
+    "shopping_category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::shopping-category.shopping-category"
+    },
     "Count": {
       "type": "integer",
       "default": 0

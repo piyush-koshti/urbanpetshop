@@ -596,6 +596,10 @@ export interface ApiCustometFollowUpCustometFollowUp
       Schema.Attribute.Private;
     note: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
+    shopping_category: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::shopping-category.shopping-category'
+    >;
     staff: Schema.Attribute.Relation<'oneToOne', 'api::staff.staff'>;
     store: Schema.Attribute.Relation<'oneToOne', 'api::store.store'>;
     updatedAt: Schema.Attribute.DateTime;

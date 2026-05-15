@@ -465,4 +465,153 @@ export default factories.createCoreController('api::customer.customer', ({ strap
       ctx.throw(500, error);
     }
   },
+
+  async updateAllShoppingCategory(ctx) {
+    try {
+      let page = 1;
+      const pageSize = 500;
+      let hasMore = true;
+
+      // Get all shopping categories
+      const allShoppingCategories = await strapi
+        .documents("api::shopping-category.shopping-category")
+        .findMany();
+
+      // Create map
+      const shoppingCategoryMap: Record<string, string> =
+        {};
+
+      allShoppingCategories.forEach((item: any) => {
+        shoppingCategoryMap[item.value] =
+          item.documentId;
+      });
+
+      while (hasMore) {
+        const customerFollowUps = await strapi
+          .documents(
+            "api::customet-follow-up.customet-follow-up"
+          )
+          .findMany({
+            populate: {
+              follow_ups: {
+                fields: ["billDate"],
+              },
+            },
+
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
+          });
+
+        console.log(
+          "SHOPPING CATEGORY PAGE:",
+          page,
+          "COUNT:",
+          customerFollowUps.length
+        );
+
+        // Stop pagination
+        if (customerFollowUps.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        for (const customerFollowUpData of customerFollowUps as any[]) {
+          try {
+            const followUps =
+              customerFollowUpData.follow_ups || [];
+
+            if (followUps.length === 0) continue;
+
+            // Get latest billDate
+            const latestFollowUp = followUps
+              .filter((item: any) => item.billDate)
+              .sort(
+                (a: any, b: any) =>
+                  new Date(b.billDate).getTime() -
+                  new Date(a.billDate).getTime()
+              )[0];
+
+            if (!latestFollowUp?.billDate) continue;
+
+            const latestBillDate = new Date(
+              latestFollowUp.billDate
+            );
+
+            const currentDate = new Date();
+
+            // Difference in days
+            const diffTime =
+              currentDate.getTime() -
+              latestBillDate.getTime();
+
+            const diffDays = Math.floor(
+              diffTime / (1000 * 60 * 60 * 24)
+            );
+
+            let shoppingCategory = "green";
+
+            if (diffDays >= 0 && diffDays <= 30) {
+              shoppingCategory = "green";
+            } else if (
+              diffDays >= 31 &&
+              diffDays <= 45
+            ) {
+              shoppingCategory = "yellow";
+            } else if (
+              diffDays >= 46 &&
+              diffDays <= 60
+            ) {
+              shoppingCategory = "orange";
+            } else if (
+              diffDays >= 61 &&
+              diffDays <= 75
+            ) {
+              shoppingCategory = "red";
+            } else if (diffDays > 75) {
+              shoppingCategory = "black";
+            }
+
+            const shoppingCategoryDocumentId =
+              shoppingCategoryMap[
+              shoppingCategory
+              ];
+
+            if (!shoppingCategoryDocumentId)
+              continue;
+
+            // Update customet-follow-up
+            await strapi
+              .documents(
+                "api::customet-follow-up.customet-follow-up"
+              )
+              .update({
+                documentId:
+                  customerFollowUpData.documentId,
+                data: {
+                  shopping_category:
+                    shoppingCategoryDocumentId,
+                },
+              });
+          } catch (error) {
+            console.log(
+              "Shopping Category Update Error:",
+              error
+            );
+          }
+        }
+
+        page++;
+      }
+
+      ctx.send({
+        success: true,
+        message:
+          "Shopping category updated successfully",
+      });
+    } catch (error) {
+      console.log(error);
+
+      ctx.throw(500, error);
+    }
+  },
 }));

@@ -8,5 +8,14 @@ export default {
                 auth: false,
             },
         },
+
+        {
+            method: "POST",
+            path: "/customer/update-all-shopping-category",
+            handler: "customer.updateAllShoppingCategory",
+            config: {
+                auth: false,
+            },
+        },
     ],
 };
