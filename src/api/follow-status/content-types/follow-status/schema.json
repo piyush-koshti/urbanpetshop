@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "follow_statuses",
+  "info": {
+    "singularName": "follow-status",
+    "pluralName": "follow-statuses",
+    "displayName": "followStatus"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    }
+  }
+}

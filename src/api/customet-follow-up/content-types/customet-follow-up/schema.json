@@ -33,6 +33,11 @@
       "relation": "oneToOne",
       "target": "api::store.store"
     },
+    "follow_status": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::follow-status.follow-status"
+    },
     "Count": {
       "type": "integer",
       "default": 0

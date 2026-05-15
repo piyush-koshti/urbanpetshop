@@ -578,6 +578,10 @@ export interface ApiCustometFollowUpCustometFollowUp
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
+    follow_status: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::follow-status.follow-status'
+    >;
     follow_ups: Schema.Attribute.Relation<
       'manyToMany',
       'api::follow-up-list.follow-up-list'
@@ -630,6 +634,35 @@ export interface ApiCustometStatusCustometStatus
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     value: Schema.Attribute.String;
+  };
+}
+
+export interface ApiFollowStatusFollowStatus
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'follow_statuses';
+  info: {
+    displayName: 'followStatus';
+    pluralName: 'follow-statuses';
+    singularName: 'follow-status';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    label: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::follow-status.follow-status'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1395,6 +1428,7 @@ declare module '@strapi/strapi' {
       'api::customer.customer': ApiCustomerCustomer;
       'api::customet-follow-up.customet-follow-up': ApiCustometFollowUpCustometFollowUp;
       'api::customet-status.customet-status': ApiCustometStatusCustometStatus;
+      'api::follow-status.follow-status': ApiFollowStatusFollowStatus;
       'api::follow-up-list.follow-up-list': ApiFollowUpListFollowUpList;
       'api::general-diary.general-diary': ApiGeneralDiaryGeneralDiary;
       'api::pet-type.pet-type': ApiPetTypePetType;
