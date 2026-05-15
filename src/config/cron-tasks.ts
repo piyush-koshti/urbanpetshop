@@ -1,5 +1,5 @@
 export default {
-    "5 0 * * *": async ({ strapi }) => {
+    "58 17 * * *": async ({ strapi }) => {
         console.log(
             "Running Daily Shopping Category Cron..."
         );
