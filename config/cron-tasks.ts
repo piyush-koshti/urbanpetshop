@@ -12,6 +12,7 @@ export default {
                 const pageSize = 500;
                 let hasMore = true;
 
+                // Get all shopping categories
                 const allShoppingCategories =
                     await strapi
                         .documents(
@@ -19,6 +20,7 @@ export default {
                         )
                         .findMany();
 
+                // Create category map
                 const shoppingCategoryMap: Record<
                     string,
                     string
@@ -31,6 +33,7 @@ export default {
                     }
                 );
 
+                // Pagination loop
                 while (hasMore) {
                     const customerFollowUps =
                         await strapi
@@ -44,8 +47,10 @@ export default {
                                     },
                                 },
 
-                                limit: pageSize,
-                                offset: (page - 1) * pageSize,
+                                pagination: {
+                                    page,
+                                    pageSize,
+                                },
                             });
 
                     console.log(
@@ -55,13 +60,14 @@ export default {
                         customerFollowUps.length
                     );
 
+                    // Stop if no records
                     if (
                         customerFollowUps.length === 0
                     ) {
-                        hasMore = false;
                         break;
                     }
 
+                    // Process records
                     for (const customerFollowUpData of customerFollowUps as any[]) {
                         try {
                             const followUps =
@@ -71,6 +77,7 @@ export default {
                             if (followUps.length === 0)
                                 continue;
 
+                            // Find latest billDate
                             const latestFollowUp =
                                 followUps
                                     .filter(
@@ -100,6 +107,7 @@ export default {
                             const currentDate =
                                 new Date();
 
+                            // Difference in days
                             const diffTime =
                                 currentDate.getTime() -
                                 latestBillDate.getTime();
@@ -138,7 +146,8 @@ export default {
                                 diffDays >= 61 &&
                                 diffDays <= 75
                             ) {
-                                shoppingCategory = "red";
+                                shoppingCategory =
+                                    "red";
                             } else if (
                                 diffDays > 75
                             ) {
@@ -153,9 +162,11 @@ export default {
 
                             if (
                                 !shoppingCategoryDocumentId
-                            )
+                            ) {
                                 continue;
+                            }
 
+                            // Update shopping category
                             await strapi
                                 .documents(
                                     "api::customet-follow-up.customet-follow-up"
@@ -163,6 +174,7 @@ export default {
                                 .update({
                                     documentId:
                                         customerFollowUpData.documentId,
+
                                     data: {
                                         shopping_category:
                                             shoppingCategoryDocumentId,
@@ -174,6 +186,14 @@ export default {
                                 error
                             );
                         }
+                    }
+
+                    // Stop pagination
+                    if (
+                        customerFollowUps.length <
+                        pageSize
+                    ) {
+                        hasMore = false;
                     }
 
                     page++;
@@ -191,7 +211,7 @@ export default {
         },
 
         options: {
-            rule: "6 19 * * *",
+            rule: "20 19 * * *",
         },
     },
 };
