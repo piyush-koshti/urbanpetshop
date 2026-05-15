@@ -11,6 +11,10 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Server =>
     keys: env.array('APP_KEYS'),
   },
 
+  cron: {
+    enabled: true,
+  },
+
   // ✅ VERY IMPORTANT (tells Strapi it's behind nginx)
   proxy: true,
 });
