@@ -443,6 +443,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
                 data: {
                   customet_status: statusDocumentId,
                 },
+                status: "published",
               });
           } catch (error) {
             console.log(
