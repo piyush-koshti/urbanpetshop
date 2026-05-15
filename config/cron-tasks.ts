@@ -213,7 +213,7 @@ export default {
         },
 
         options: {
-            rule: "20 19 * * *",
+            rule: "34 19 * * *",
         },
     },
 };
