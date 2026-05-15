@@ -179,6 +179,8 @@ export default {
                                         shopping_category:
                                             shoppingCategoryDocumentId,
                                     },
+
+                                    status: "published",
                                 });
                         } catch (error) {
                             console.log(
