@@ -47,10 +47,8 @@ export default {
                                     },
                                 },
 
-                                pagination: {
-                                    page,
-                                    pageSize,
-                                },
+                                limit: pageSize,
+                                start: (page - 1) * pageSize,
                             });
 
                     console.log(
