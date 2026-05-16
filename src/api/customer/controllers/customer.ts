@@ -455,6 +455,10 @@ export default factories.createCoreController('api::customer.customer', ({ strap
         page++;
       }
 
+      console.log(
+        "Customer status updated successfully - Done!!!"
+      );
+
       ctx.send({
         success: true,
         message:
