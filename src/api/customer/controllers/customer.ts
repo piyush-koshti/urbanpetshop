@@ -354,7 +354,7 @@ export default factories.createCoreController('api::customer.customer', ({ strap
             },
 
             limit: pageSize,
-            offset: (page - 1) * pageSize,
+            start: (page - 1) * pageSize,
           });
 
         console.log(
