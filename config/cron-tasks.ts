@@ -211,7 +211,7 @@ export default {
         },
 
         options: {
-            rule: "50 18 * * *",
+            rule: "0 0 * * *",
         },
     },
 };
