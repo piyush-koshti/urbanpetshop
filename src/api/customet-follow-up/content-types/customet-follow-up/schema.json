@@ -50,6 +50,9 @@
     "FollowUpDate": {
       "type": "date"
     },
+    "lastPurchaseDate": {
+      "type": "date"
+    },
     "isFollowed": {
       "type": "boolean",
       "default": false

@@ -588,6 +588,7 @@ export interface ApiCustometFollowUpCustometFollowUp
     >;
     FollowUpDate: Schema.Attribute.Date;
     isFollowed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    lastPurchaseDate: Schema.Attribute.Date;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
